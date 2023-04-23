@@ -44,18 +44,28 @@ class ActionResult(BaseModel):
     )
 
 
-app = FastAPI()
+app = FastAPI(
+    title='prunner',
+    description='Run an isolated process',
+    redoc_url=None
+)
+
+tags_metadata = [{'name': 'methods'}]
 
 proc_name = 'timer'
 proc = None
 
 
-@app.get(f'/{proc_name}')
+@app.get(f'/{proc_name}', tags=['methods'])
 async def is_running() -> bool:
     return proc is not None and proc.poll() is None
 
 
-@app.post(f'/{proc_name}', status_code=status.HTTP_201_CREATED)
+@app.post(
+    f'/{proc_name}',
+    status_code=status.HTTP_201_CREATED,
+    tags=['methods'],
+)
 async def do_action(
     action: Annotated[Action, Body(
         title='Action type',
@@ -78,7 +88,7 @@ async def do_action(
     return ActionResult(pid=proc.pid)
 
 
-@app.get(f'/{proc_name}/result')
+@app.get(f'/{proc_name}/result', tags=['methods'])
 async def get_result() -> ProcessResult:
     if proc is None or await is_running():
         raise HTTPException(
