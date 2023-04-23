@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 from fastapi import FastAPI
 from fastapi import status, HTTPException
 from fastapi import Body
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Action(str, Enum):
@@ -14,10 +14,29 @@ class Action(str, Enum):
 
 
 class ProcessResult(BaseModel):
-    pid: int
-    exit_code: int
-    stdout: str
-    stderr: str
+    pid: int = Field(
+        title='Process ID',
+        description='The ID of the completed process'
+    )
+    exit_code: int = Field(
+        title='Exit status code',
+        description='The exit status code of the completed process'
+    )
+    stdout: str = Field(
+        title='Process output',
+        description='The output of the completed process'
+    )
+    stderr: str = Field(
+        title='Process error output',
+        description='The error output of the completed process'
+    )
+
+
+class ActionResult(BaseModel):
+    pid: int = Field(
+        title='Process ID',
+        description='The ID of a process the action is performed on'
+    )
 
 
 app = FastAPI()
@@ -32,7 +51,12 @@ async def is_running() -> bool:
 
 
 @app.post(f'/{proc_name}', status_code=status.HTTP_201_CREATED)
-async def do_action(action: Annotated[Action, Body()]) -> int:
+async def do_action(
+    action: Annotated[Action, Body(
+        title='Action type',
+        description='Action type to perform on process'
+    )]
+) -> ActionResult:
     global proc
     if action is Action.start:
         if await is_running():
@@ -46,7 +70,7 @@ async def do_action(action: Annotated[Action, Body()]) -> int:
             raise HTTPException(
                 status_code=402, detail='There is no running process'
             )
-    return proc.pid
+    return ActionResult(pid=proc.pid)
 
 
 @app.get(f'/{proc_name}/result')
