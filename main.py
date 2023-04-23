@@ -22,12 +22,12 @@ class ProcessResult(BaseModel):
     exit_code: int = Field(
         title='Exit status code',
         description='The exit status code of the completed process',
-        example=0
+        example=1
     )
     stdout: str = Field(
         title='Process output',
         description='The output of the completed process',
-        example='The process is very useful'
+        example='This process will fail'
     )
     stderr: str = Field(
         title='Process error output',
