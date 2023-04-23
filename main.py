@@ -17,18 +17,22 @@ class ProcessResult(BaseModel):
     pid: int = Field(
         title='Process ID',
         description='The ID of the completed process'
+        example=12
     )
     exit_code: int = Field(
         title='Exit status code',
         description='The exit status code of the completed process'
+        example=0
     )
     stdout: str = Field(
         title='Process output',
         description='The output of the completed process'
+        example='The process is very useful'
     )
     stderr: str = Field(
         title='Process error output',
         description='The error output of the completed process'
+        example='Error: the process has failed'
     )
 
 
@@ -36,6 +40,7 @@ class ActionResult(BaseModel):
     pid: int = Field(
         title='Process ID',
         description='The ID of a process the action is performed on'
+        example=12
     )
 
 
