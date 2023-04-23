@@ -44,13 +44,14 @@ class ActionResult(BaseModel):
     )
 
 
+tags_metadata = [{'name': 'methods'}]
+
 app = FastAPI(
     title='prunner',
     description='Run an isolated process',
-    redoc_url=None
+    redoc_url=None,
+    openapi_tags=tags_metadata
 )
-
-tags_metadata = [{'name': 'methods'}]
 
 proc_name = 'timer'
 proc = None
@@ -64,7 +65,7 @@ async def is_running() -> bool:
 @app.post(
     f'/{proc_name}',
     status_code=status.HTTP_201_CREATED,
-    tags=['methods'],
+    tags=['methods']
 )
 async def do_action(
     action: Annotated[Action, Body(
