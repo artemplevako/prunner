@@ -59,6 +59,9 @@ proc = None
 
 @app.get(f'/{proc_name}', tags=['methods'])
 async def is_running() -> bool:
+    """
+    Returns if the target process is running right now.
+    """
     return proc is not None and proc.poll() is None
 
 
@@ -73,6 +76,11 @@ async def do_action(
         description='Action type to perform on process'
     )]
 ) -> ActionResult:
+    """
+    Performs an action on the target process.
+    - "start" for launching the process
+    - "stop" for terminating the process
+    """
     global proc
     if action is Action.start:
         if await is_running():
@@ -91,6 +99,9 @@ async def do_action(
 
 @app.get(f'/{proc_name}/result', tags=['methods'])
 async def get_result() -> ProcessResult:
+    """
+    Retrieves process completion data.
+    """
     if proc is None or await is_running():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail='Not Found'
