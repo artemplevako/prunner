@@ -2,7 +2,7 @@ from enum import Enum
 from subprocess import Popen, PIPE
 from typing import Annotated, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi import Body
 from pydantic import BaseModel
 
@@ -30,7 +30,7 @@ async def is_running() -> bool:
     return proc is not None and proc.poll() is None
 
 
-@app.post(f'/{proc_name}')
+@app.post(f'/{proc_name}', status_code=status.HTTP_201_CREATED)
 async def do_action(action: Annotated[Action, Body()]) -> int:
     global proc
     if action is Action.start:
