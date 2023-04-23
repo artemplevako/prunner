@@ -41,11 +41,11 @@ async def do_action(action: Annotated[Action, Body()]) -> int:
             )
         proc = Popen('./timer', stdout=PIPE, stderr=PIPE)
     elif action is Action.stop:
+        proc.terminate()
         if proc is None or not await is_running():
             raise HTTPException(
                 status_code=402, detail='There is no running process'
             )
-        proc.kill()
     return proc.pid
 
 
